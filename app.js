@@ -1,0 +1,37 @@
+const express = require("express");
+
+const app = express();
+
+const mongoose = require("mongoose");
+require("dotenv/config");
+const dogRouter = require("./routes/dogs");
+const userRouter = require("./routes/users");
+const bodyParser = require("body-parser");
+const os = require('os');
+
+app.use(bodyParser.json());
+
+
+//routes
+app.use("/dog", dogRouter);
+app.use("/user", userRouter);
+
+app.get("", (req, res) => {
+  res.send("This is the landing page");
+});
+
+//Connect to DB
+mongoose.connect("mongodb+srv://root:Enitan@dogzone.b6pro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
+{
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", function () {
+  console.log("Connected successfully");
+});
+
+//Start the server
+app.listen("3000");
