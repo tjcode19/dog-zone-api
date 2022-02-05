@@ -20,13 +20,9 @@ router.get("/", async (req, res) => {
 //Get a user by ID
 router.get("/:username", async (req, res) => {
   try {
-    const user = await Users.findById(req.params.dogId);
+    const user = await Users.findOne({email:req.params.username});
 
-    var len = user.length;
-
-    console.log("log if here 2" + len);
-
-    if (dog.length < 1) {
+    if (user === null) {
       res.json({
         responseCode: "01",
         responseMessage: "No record found",
@@ -69,8 +65,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-//Delete a dog by ID
-router.delete("/:dogId", async (req, res) => {
+//Delete a user by ID
+router.delete("/:username", async (req, res) => {
   try {
     const dogs = await Users.deleteOne({ _id: req.params.dogId });
     res.json({
@@ -83,7 +79,7 @@ router.delete("/:dogId", async (req, res) => {
   }
 });
 
-//Update a dog by ID
+//Update a user by ID
 router.patch("/:dogId", async (req, res) => {
   try {
     await Users.updateOne(

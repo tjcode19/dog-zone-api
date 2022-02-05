@@ -16,7 +16,7 @@ app.use("/dog", dogRouter);
 app.use("/user", userRouter);
 
 app.get("", (req, res) => {
-  res.send("This is the landing page");
+  res.send("<h1>Welcome to DogZone</h1> <p>Your number one plug for foreign dogs</p>");
 });
 
 //Connect to DB
