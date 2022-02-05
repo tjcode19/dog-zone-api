@@ -7,10 +7,9 @@ require("dotenv/config");
 const dogRouter = require("./routes/dogs");
 const userRouter = require("./routes/users");
 const bodyParser = require("body-parser");
-const os = require('os');
+const os = require("os");
 
 app.use(bodyParser.json());
-
 
 //routes
 app.use("/dog", dogRouter);
@@ -21,8 +20,7 @@ app.get("", (req, res) => {
 });
 
 //Connect to DB
-mongoose.connect("mongodb+srv://root:Enitan@dogzone.b6pro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
-{
+mongoose.connect(process.env.DB_CONNECTION, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
