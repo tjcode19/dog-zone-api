@@ -6,18 +6,22 @@ const mongoose = require("mongoose");
 require("dotenv/config");
 const dogRouter = require("./routes/dogs");
 const userRouter = require("./routes/users");
-const bodyParser = require("body-parser");
 const os = require("os");
 
-app.use(bodyParser.json());
+//parse json
+app.use(express.json());
+//parse form data
+app.use(express.urlencoded({ extended: false }));
 
 //routes
 app.use("/dog", dogRouter);
 app.use("/user", userRouter);
 
-app.get("", (req, res) => {
-  res.send("<h1>Welcome to DogZone</h1> <p>Your number one plug for foreign dogs</p>");
-});
+app.use(express.static("./public"));
+
+// app.get("", (req, res) => {
+//   res.send("<h1>Welcome to DogZone</h1> <p>Your number one plug for foreign dogs</p>");
+// });
 
 //Connect to DB
 mongoose.connect(process.env.DB_CONNECTION, {
