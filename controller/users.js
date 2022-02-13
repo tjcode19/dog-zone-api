@@ -4,7 +4,7 @@ const Auth = require("../models/Auth");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await Users.find();
+    const users = await Users.find().lean();
     res.json({
       responseCode: "00",
       responseMessage: "Data retrieved successfully",

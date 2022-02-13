@@ -1,7 +1,10 @@
 const Auth = require("../models/Auth");
 
+const {generateAccessToken } = require('../uitls/utils')
+
 const login = async (req, res) => {
   const { username, password } = req.body;
+  const token =  generateAccessToken({ username: username});
 
   if (!username || !password) {
     return res.status(400).json({
@@ -29,7 +32,7 @@ const login = async (req, res) => {
     res.status(200).json({
       responseCode: "00",
       responseMessage: "Login was successful",
-      data: {},
+      data: {token: token},
     });
   } catch (err) {
     res.json({ message: err });

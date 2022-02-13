@@ -5,7 +5,7 @@ const validateEmail = function (email) {
 };
 
 const generateAccessToken = function (username) {
-  return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: "30d" });
+  return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 module.exports = { validateEmail, generateAccessToken };

@@ -4,7 +4,7 @@ const getDogs = async (req, res) => {
   const { search, limit } = req.query;
 
   try {
-    const dogs = await Dogs.find();
+    const dogs = await Dogs.find().lean();
 
     let sortedList = [...dogs];
 
