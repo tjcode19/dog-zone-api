@@ -1,99 +1,28 @@
 const express = require("express");
 
 const router = express.Router();
-const Users = require("../models/Users");
+
+const {
+  getUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+} = require("../controller/users");
 
 //Get all Users
-router.get("/", async (req, res) => {
-  try {
-    const users = await Users.find();
-    res.json({
-      responseCode: "00",
-      responseMessage: "Data retrieved successfully",
-      data: users,
-    });
-  } catch (error) {
-    res.json({ message: err });
-  }
-});
+router.get("/", getUsers);
 
 //Get a user by ID
-router.get("/:username", async (req, res) => {
-  try {
-    const user = await Users.findOne({email:req.params.username});
-
-    if (user === null) {
-      res.json({
-        responseCode: "01",
-        responseMessage: "No record found",
-      });
-      //   return;
-    }
-
-    res.json({
-      responseCode: "00",
-      responseMessage: "Data retrieved successfully",
-      data: user,
-    });
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
+router.get("/:username", getUserById);
 
 //Save new user
-router.post("/", async (req, res) => {
-  const user = new Users({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    phoneNumber: req.body.phoneNumber,
-    email: req.body.email,
-  });
-
-  try {
-    const userSave = await user.save();
-
-    res.json({
-      responseCode: "00",
-      responseMessage: "Data added successfully",
-      data: userSave,
-    });
-  } catch (err) {
-    res.json({ 
-      responseCode: "01",
-      responseMessage: "Failed saving new user",
-      message: err.key });
-  }
-});
+router.post("/", createUser);
 
 //Delete a user by ID
-router.delete("/:username", async (req, res) => {
-  try {
-    const dogs = await Users.deleteOne({ _id: req.params.dogId });
-    res.json({
-      responseCode: "00",
-      responseMessage: "Data deleted successfully",
-      data: dogs,
-    });
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
+router.delete("/:username", deleteUser);
 
 //Update a user by ID
-router.patch("/:dogId", async (req, res) => {
-  try {
-    await Users.updateOne(
-      { _id: req.params.dogId },
-      { $set: { price: req.body.price } }
-    );
-    res.json({
-      responseCode: "00",
-      responseMessage: "Data updated successfully",
-      data: {},
-    });
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
+router.patch("/:dogId", updateUser);
 
 module.exports = router;

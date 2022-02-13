@@ -8,8 +8,8 @@ const mongoose = require("mongoose");
 require("dotenv/config");
 const dogRouter = require("./routes/dogs");
 const userRouter = require("./routes/users");
-const os = require("os");
-
+const authRouter = require("./routes/auth");
+// const os = require("os");
 
 //parse json
 app.use(express.json());
@@ -17,14 +17,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 //routes
-app.use("/dog", dogRouter);
-app.use("/user", userRouter);
+app.use(`${process.env.BASE_URL}/dog`, dogRouter);
+app.use(`${process.env.BASE_URL}/user`, userRouter);
+app.use(`${process.env.BASE_URL}/auth`, authRouter);
 
 app.use(express.static("./public"));
 
-// app.get("", (req, res) => {
-//   res.send("<h1>Welcome to DogZone</h1> <p>Your number one plug for foreign dogs</p>");
-// });
+app.all("*", (req, res) => {
+  res.status(404).json({
+    responseCode: "01",
+    responseMessage:
+      "This resource you are trying to access is not available. Kindly check the url and try again",
+  });
+});
 
 //Connect to DB
 mongoose.connect(process.env.DB_CONNECTION, {
