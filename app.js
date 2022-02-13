@@ -1,12 +1,15 @@
 const express = require("express");
 
 const app = express();
+//Use this to genearate JWT_SECRET
+// const jwt_token = require("crypto").randomBytes(64).toString("hex");
 
 const mongoose = require("mongoose");
 require("dotenv/config");
 const dogRouter = require("./routes/dogs");
 const userRouter = require("./routes/users");
 const os = require("os");
+
 
 //parse json
 app.use(express.json());

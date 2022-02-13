@@ -1,4 +1,4 @@
-const validateEmail =  require('../uitls/utils');
+const {validateEmail} =  require('../uitls/utils');
 const mongoose = require('mongoose');
 
 
