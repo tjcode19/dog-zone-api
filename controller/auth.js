@@ -1,10 +1,13 @@
 const Auth = require("../models/Auth");
+const Users = require("../models/Users");
+const User = require("../models/Users");
 
-const {generateAccessToken } = require('../uitls/utils')
+const { generateAccessToken } = require("../uitls/utils");
 
 const login = async (req, res) => {
+  console.log(req.body);
   const { username, password } = req.body;
-  const token =  generateAccessToken({ username: username});
+  const token = generateAccessToken({ username: username });
 
   if (!username || !password) {
     return res.status(400).json({
@@ -29,10 +32,19 @@ const login = async (req, res) => {
       });
     }
 
+    // const { firstName, lastName, email } = await Users.findOne({
+    //   email: username,
+    // });
+
     res.status(200).json({
       responseCode: "00",
       responseMessage: "Login was successful",
-      data: {token: token},
+      data: {
+        // token: token,
+        // firstName: firstName,
+        // lastName: lastName,
+        // username: email,
+      },
     });
   } catch (err) {
     res.json({ message: err });

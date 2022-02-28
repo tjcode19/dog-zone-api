@@ -10,7 +10,7 @@ const DogSchema = mongoose.Schema({
     type: Number,
     require: true,
   },
-  category:String,
+  // dog_category_id, 
   colour: String,
   createdDate: {
     type: Date,

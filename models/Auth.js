@@ -6,7 +6,7 @@ const AuthSchema = mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique:true
+    unique: true,
   },
   password: {
     type: String,
@@ -39,9 +39,13 @@ AuthSchema.methods.setPassword = function (password) {
 
 // Method to check the entered password is correct or not
 AuthSchema.methods.validPassword = function (password) {
+  if (!this.salt) {
+    return false;
+  }
   var hash = crypto
     .pbkdf2Sync(password, this.salt, 1000, 64, `sha512`)
     .toString(`hex`);
+
   return this.password === hash;
 };
 

@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const authenticationMiddleware = require("../middlewares/auth");
+
 const {
   getUsers,
   getUserById,
@@ -11,7 +13,7 @@ const {
 } = require("../controller/users");
 
 //Get all Users
-router.get("/", getUsers);
+router.route("/").get(authenticationMiddleware, getUsers);
 
 //Get a user by ID
 router.get("/:username", getUserById);

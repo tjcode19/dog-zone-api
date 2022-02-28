@@ -7,7 +7,7 @@ const {login, createAuth} = require('../controller/auth')
 
 
 //Post dog data
-router.post("/", login );
+router.post("/login", login );
 
 router.post("/create",  createAuth );
 
