@@ -32,18 +32,18 @@ const login = async (req, res) => {
       });
     }
 
-    // const { firstName, lastName, email } = await Users.findOne({
-    //   email: username,
-    // });
+    const { firstName, lastName, email } = await Users.findOne({
+      email: username,
+    });
 
     res.status(200).json({
       responseCode: "00",
       responseMessage: "Login was successful",
       data: {
-        // token: token,
-        // firstName: firstName,
-        // lastName: lastName,
-        // username: email,
+        token: token,
+        firstName: firstName,
+        lastName: lastName,
+        username: email,
       },
     });
   } catch (err) {
