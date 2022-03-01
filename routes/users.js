@@ -16,15 +16,15 @@ const {
 router.route("/").get(authenticationMiddleware, getUsers);
 
 //Get a user by ID
-router.get("/:username", getUserById);
+router.route("/:username").get(authenticationMiddleware, getUserById);
 
 //Save new user
-router.post("/", createUser);
+router.route("/").post(authenticationMiddleware, createUser);
 
 //Delete a user by ID
-router.delete("/:username", deleteUser);
+router.route("/:username").delete(authenticationMiddleware, deleteUser);
 
 //Update a user by ID
-router.patch("/:dogId", updateUser);
+router.route("/:username").patch(authenticationMiddleware, updateUser);
 
 module.exports = router;
