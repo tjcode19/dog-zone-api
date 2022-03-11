@@ -11,8 +11,9 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  auth: { type: mongoose.Schema.Types.ObjectId, ref: 'Auth' },
   phoneNumber: {
-    type: Number,
+    type: String,
     required: true,
   },
   email: {
@@ -29,4 +30,4 @@ const UserSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Users", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

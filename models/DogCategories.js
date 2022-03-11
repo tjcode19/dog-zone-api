@@ -6,4 +6,4 @@ const DogCat = mongoose.Schema({
     name:String
 });
 
-module.exports = mongoose.model('DogCategories', DogCat);
+module.exports = mongoose.model('DogCategory', DogCat);

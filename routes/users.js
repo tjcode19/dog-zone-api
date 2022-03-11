@@ -1,8 +1,10 @@
 const express = require("express");
 
 const router = express.Router();
+const Role = require("../uitls/constants");
 
 const authenticationMiddleware = require("../middlewares/auth");
+const { grantAccess } = require("../middlewares/authorize");
 
 const {
   getUsers,
@@ -13,18 +15,20 @@ const {
 } = require("../controller/users");
 
 //Get all Users
-router.route("/").get(authenticationMiddleware, getUsers);
+router
+  .route("/")
+  .get(authenticationMiddleware, grantAccess([Role.Admin]), getUsers);
 
 //Get a user by ID
-router.route("/:username").get(authenticationMiddleware, getUserById);
+router.route("/:userId").get(authenticationMiddleware, grantAccess([Role.Basic, Role.Seller, Role.Admin]), getUserById);
 
 //Save new user
-router.route("/").post(authenticationMiddleware, createUser);
+router.route("/").post(createUser);
 
 //Delete a user by ID
-router.route("/:username").delete(authenticationMiddleware, deleteUser);
+router.route("/:userId").delete(authenticationMiddleware, grantAccess([Role.Admin]), deleteUser);
 
 //Update a user by ID
-router.route("/:username").patch(authenticationMiddleware, updateUser);
+router.route("/:userId").patch(authenticationMiddleware, grantAccess([Role.Basic, Role.Seller, Role.Admin]), updateUser);
 
 module.exports = router;

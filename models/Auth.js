@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 var crypto = require("crypto");
+const Role = require("../uitls/constants");
 
 const AuthSchema = mongoose.Schema({
-  id: Number,
+  _id: mongoose.Schema.Types.ObjectId,
   username: {
     type: String,
     required: true,
@@ -13,6 +14,11 @@ const AuthSchema = mongoose.Schema({
     require: true,
   },
   token: String,
+  role: {
+    type: String,
+    default: Role.Basic,
+    enum: [Role.Basic, Role.Seller, Role.Admin]
+   },
   salt: {
     type: String,
     require: true,
@@ -21,11 +27,12 @@ const AuthSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  createdDate: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  
+  // createdDate: {
+  //   type: Date,
+  //   default: Date.now,
+  // },
+}, {timestamps: true});
 
 AuthSchema.methods.setPassword = function (password) {
   // Creating a unique salt for a particular user

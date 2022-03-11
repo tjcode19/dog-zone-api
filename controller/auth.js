@@ -1,13 +1,12 @@
 const Auth = require("../models/Auth");
 const Users = require("../models/Users");
 const User = require("../models/Users");
+const mongoose = require("mongoose");
 
 const { generateAccessToken } = require("../uitls/utils");
 
 const login = async (req, res) => {
-  console.log(req.body);
   const { username, password } = req.body;
-  const token = generateAccessToken({ username: username });
 
   if (!username || !password) {
     return res.status(400).json({
@@ -17,24 +16,29 @@ const login = async (req, res) => {
   }
 
   try {
-    const auth = await Auth.findOne({ username: username });
+    const user = await Users.findOne({
+      email: username,
+    }).populate("auth");
 
-    if (!auth) {
+    const token = generateAccessToken({
+      userId: user._id,
+      role: user.auth.role,
+    });
+
+    const { firstName, lastName, email } = user;
+
+    if (!user) {
       return res.status(404).json({
         responseCode: "01",
         responseMessage: "User does not exist",
       });
     }
-    if (!auth.validPassword(password)) {
+    if (!user.auth.validPassword(password)) {
       return res.status(400).json({
         responseCode: "01",
         responseMessage: "Wrong Password",
       });
     }
-
-    const { firstName, lastName, email } = await Users.findOne({
-      email: username,
-    });
 
     res.status(200).json({
       responseCode: "00",
@@ -43,7 +47,8 @@ const login = async (req, res) => {
         token: token,
         firstName: firstName,
         lastName: lastName,
-        username: email,
+        lastLogin: user.auth.lastLogin,
+        role: user.auth.role,
       },
     });
   } catch (err) {
@@ -52,8 +57,14 @@ const login = async (req, res) => {
 };
 
 const createAuth = async (req, res) => {
-  const { username, password, salt } = req;
-  const auth = new Auth({ username, password, salt });
+  const { username, password, salt, role } = req;
+  const auth = new Auth({
+    username,
+    password,
+    salt,
+    _id: new mongoose.Types.ObjectId(),
+    role: role || "Basic",
+  });
 
   try {
     await auth.save();
@@ -61,10 +72,13 @@ const createAuth = async (req, res) => {
     const resp = {
       responseCode: "00",
       responseMessage: "User creation successful",
+      id: auth._id,
+      role: auth.role,
     };
 
     return resp;
   } catch (err) {
+    console.log(err);
     const resp = {
       responseCode: "01",
       responseMessage: "User creation failed",

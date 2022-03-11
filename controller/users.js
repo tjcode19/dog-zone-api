@@ -1,30 +1,49 @@
 const Users = require("../models/Users");
 const { createAuth } = require("../controller/auth");
 const Auth = require("../models/Auth");
+const Role = require("../uitls/constants");
 
 const getUsers = async (req, res) => {
+  console.log(req.user);
   try {
-    const users = await Users.find().lean();
+    let users = await Users.find().lean().populate("auth");
+
+    for (i = 0; i < users.length; i++) {
+      const user = users[i];
+      users[i].lastLogin = user.auth.lastLogin;
+    }
+
     res.json({
       responseCode: "00",
       responseMessage: "Data retrieved successfully",
       data: users,
     });
-  } catch (error) {
+  } catch (err) {
     res.json({ message: err });
   }
 };
 
 const getUserById = async (req, res) => {
-  try {
-    const user = await Users.findOne({ email: req.params.username });
 
-    if (user === null) {
+  const userId = req.params.userId;
+  const user = req.user;
+
+  //Check if this user has the right to access this resource.
+  if (userId !== user.userId && user.role !== Role.Admin) {
+    return res.json({
+      responseCode: "01",
+      responseMessage: "You do not have access to this resources",
+    });
+  }
+
+  try {
+    const user = await Users.findOne({ _id: userId });
+
+    if (!user) {
       res.json({
         responseCode: "01",
         responseMessage: "No record found",
       });
-      //   return;
     }
 
     res.json({
@@ -38,31 +57,39 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { firstName, lastName, phoneNumber, email } = req.body;
-  const user = new Users({ firstName, lastName, phoneNumber, email });
+  const { firstName, lastName, phoneNumber, email, role } = req.body;
 
   let auth = new Auth();
   auth.username = email;
   auth.password = req.body.password;
   auth.setPassword(req.body.password);
+  auth.role = role;
 
   try {
-    // const authCall = await createAuth(auth, res);
+    const authCall = await createAuth(auth, res);
 
-    // if (authCall.responseCode != "00") {
-    //   return res.status(400).json({
-    //     responseCode: "01",
-    //     responseMessage: "User Profile creation failed",
-    //     error: authCall.err,
-    //   });
-    // }
+    if (authCall.responseCode != "00") {
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "User Profile creation failed",
+        error: authCall.err,
+      });
+    }
+
+    const user = new Users({
+      firstName,
+      lastName,
+      phoneNumber,
+      email,
+      auth: authCall.id,
+    });
 
     const userSave = await user.save();
-    
 
     res.json({
       responseCode: "00",
       responseMessage: "User created successfully",
+      role: authCall.role,
       data: userSave,
     });
   } catch (err) {
@@ -74,9 +101,21 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  const userId = req.params.userId;
+  const user = req.user;
+
+  //Check if this user has the right to access this resource.
+  if (userId !== user.userId && user.role !== Role.Admin) {
+    return res.json({
+      responseCode: "01",
+      responseMessage: "You do not have access to this resources",
+    });
+  }
+
+
   try {
     await Users.updateOne(
-      { _id: req.params.dogId },
+      { _id: userId },
       { $set: { price: req.body.price } }
     );
     res.json({
@@ -91,7 +130,7 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const dogs = await Users.deleteOne({ _id: req.params.dogId });
+    const dogs = await Users.deleteOne({ _id: req.params.userId });
     res.json({
       responseCode: "00",
       responseMessage: "Data deleted successfully",
