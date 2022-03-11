@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const DogSchema = mongoose.Schema({
+const ProductSchema = mongoose.Schema({
   id: Number,
   name: {
     type: String,
@@ -18,4 +18,4 @@ const DogSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Dog", DogSchema);
+module.exports = mongoose.model("Product", ProductSchema);

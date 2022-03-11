@@ -1,16 +1,16 @@
-const Dogs = require("../models/Dogs");
+const Products = require("../models/Product");
 
-const getDogs = async (req, res) => {
+const getProducts = async (req, res) => {
   const { search, limit } = req.query;
 
   try {
-    const dogs = await Dogs.find().lean();
+    const Products = await Products.find().lean();
 
-    let sortedList = [...dogs];
+    let sortedList = [...Products];
 
     if (search) {
-      sortedList = sortedList.filter((dog) => {
-        return dog.name.startsWith(search);
+      sortedList = sortedList.filter((Product) => {
+        return Product.name.startsWith(search);
       });
     }
 
@@ -25,26 +25,26 @@ const getDogs = async (req, res) => {
       });
     }
 
-    const newDogs = sortedList.map((dog) => {
-      const { _id, name } = dog;
+    const newProducts = sortedList.map((Product) => {
+      const { _id, name } = Product;
       return { _id, name };
     });
 
     res.json({
       responseCode: "00",
       responseMessage: "Data retrieved successfully",
-      data: newDogs,
+      data: newProducts,
     });
   } catch (error) {
     res.json({ message: err });
   }
 };
 
-const getDogById = async (req, res) => {
+const getProductById = async (req, res) => {
   try {
-    const dog = await Dogs.findById(req.params.dogId);
+    const product = await Products.findById(req.params.productId);
 
-    if (dog == null) {
+    if (product == null) {
       res.status(404).json({
         responseCode: "01",
         responseMessage: "No record found",
@@ -55,16 +55,16 @@ const getDogById = async (req, res) => {
     res.json({
       responseCode: "00",
       responseMessage: "Data retrieved successfully",
-      data: dog,
+      data: product,
     });
   } catch (err) {
     res.json({ message: err });
   }
 };
 
-const createDog = async (req, res) => {
+const createProduct = async (req, res) => {
   const { name, price } = req.body;
-  const dog = new Dogs({ name, price });
+  const product = new Products({ name, price });
 
   if (!name || !price) {
     return res.status(400).json({
@@ -74,35 +74,35 @@ const createDog = async (req, res) => {
   }
 
   try {
-    const dogSave = await dog.save();
+    const productSave = await product.save();
 
     res.status(201).json({
       responseCode: "00",
       responseMessage: "Data added successfully",
-      data: dogSave,
+      data: productSave,
     });
   } catch (err) {
     res.json({ message: err });
   }
 };
 
-const deleteDog = async (req, res) => {
+const deleteProduct = async (req, res) => {
   try {
-    const dogs = await Dogs.deleteOne({ _id: req.params.dogId });
+    const products = await Products.deleteOne({ _id: req.params.productId });
     res.json({
       responseCode: "00",
       responseMessage: "Data deleted successfully",
-      data: dogs,
+      data: products,
     });
   } catch (err) {
     res.json({ message: err });
   }
 };
 
-const updateDog = async (req, res) => {
+const updateProduct = async (req, res) => {
   try {
-    const update = await Dogs.updateOne(
-      { _id: req.params.dogId },
+    const update = await Products.updateOne(
+      { _id: req.params.productId },
       { $set: req.params }
     );
     res.json({
@@ -115,4 +115,10 @@ const updateDog = async (req, res) => {
   }
 };
 
-module.exports = { getDogs, getDogById, createDog, updateDog, deleteDog };
+module.exports = {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+};

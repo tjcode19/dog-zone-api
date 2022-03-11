@@ -6,7 +6,7 @@ const app = express();
 
 const mongoose = require("mongoose");
 require("dotenv/config");
-const dogRouter = require("./routes/dogs");
+const dogRouter = require("./routes/products");
 const userRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 // const os = require("os");
