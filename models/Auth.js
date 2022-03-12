@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 var crypto = require("crypto");
-const Role = require("../uitls/constants");
+const {Role} = require("../uitls/constants");
 
 const AuthSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,

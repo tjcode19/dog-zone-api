@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-const Role = require("../uitls/constants");
+const {Role} = require("../uitls/constants");
 
 const authenticationMiddleware = require("../middlewares/auth");
 const { grantAccess } = require("../middlewares/authorize");

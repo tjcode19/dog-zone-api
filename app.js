@@ -6,9 +6,10 @@ const app = express();
 
 const mongoose = require("mongoose");
 require("dotenv/config");
-const dogRouter = require("./routes/products");
+const productRouter = require("./routes/products");
 const userRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
+const addressRouter = require("./routes/addressbook");
 // const os = require("os");
 
 //parse json
@@ -17,9 +18,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 //routes
-app.use(`${process.env.BASE_URL}/dog`, dogRouter);
+app.use(`${process.env.BASE_URL}/product`, productRouter);
 app.use(`${process.env.BASE_URL}/user`, userRouter);
 app.use(`${process.env.BASE_URL}/auth`, authRouter);
+app.use(`${process.env.BASE_URL}/addressbook`, addressRouter);
 
 app.use(express.static("./public"));
 

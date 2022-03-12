@@ -56,6 +56,28 @@ const login = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const userId = req.user.userId;
+
+  console.log("user id", userId);
+
+  try {
+    const auth = await User.findOne({ _id: userId });
+
+    if (!auth) {
+      return res.status(404).json({
+        responseCode: "01",
+        responseMessage: "No Record Found",
+      });
+    }
+
+    res.status(200).json({
+      responseCode: "00",
+      responseMessage: "Password was reset successful",
+    });
+  } catch (err) {}
+};
+
 const createAuth = async (req, res) => {
   const { username, password, salt, role } = req;
   const auth = new Auth({
@@ -92,4 +114,4 @@ const createAuth = async (req, res) => {
   }
 };
 
-module.exports = { login, createAuth };
+module.exports = { login, createAuth, resetPassword };

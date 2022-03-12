@@ -2,6 +2,7 @@ const { validateEmail } = require("../uitls/utils");
 const mongoose = require("mongoose");
 
 const UserSchema = mongoose.Schema({
+  // _id: mongoose.Schema.Types.ObjectId,
   firstName: {
     type: String,
 
@@ -11,7 +12,8 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  auth: { type: mongoose.Schema.Types.ObjectId, ref: 'Auth' },
+  auth: { type: mongoose.Schema.Types.ObjectId, ref: "Auth" },
+  address: [{ type: mongoose.Schema.Types.ObjectId, ref: "AddressBook" }],
   phoneNumber: {
     type: String,
     required: true,

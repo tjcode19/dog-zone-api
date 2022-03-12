@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 
 const ProductCateSchema = mongoose.Schema({
-    id:Number,
+    _id: mongoose.Schema.Types.ObjectId,
     name:String
 });
 

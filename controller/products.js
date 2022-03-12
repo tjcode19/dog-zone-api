@@ -4,13 +4,13 @@ const getProducts = async (req, res) => {
   const { search, limit } = req.query;
 
   try {
-    const Products = await Products.find().lean();
+    const products = await Products.find().lean();
 
-    let sortedList = [...Products];
+    let sortedList = [...products];
 
     if (search) {
-      sortedList = sortedList.filter((Product) => {
-        return Product.name.startsWith(search);
+      sortedList = sortedList.filter((product) => {
+        return product.name.startsWith(search);
       });
     }
 
@@ -19,14 +19,14 @@ const getProducts = async (req, res) => {
     }
 
     if (sortedList.length < 1) {
-      return res.status(404).json({
+      return res.status(200).json({
         responseCode: "01",
         responseMessage: "No record found",
       });
     }
 
-    const newProducts = sortedList.map((Product) => {
-      const { _id, name } = Product;
+    const newProducts = sortedList.map((product) => {
+      const { _id, name } = product;
       return { _id, name };
     });
 
@@ -36,7 +36,11 @@ const getProducts = async (req, res) => {
       data: newProducts,
     });
   } catch (error) {
-    res.json({ message: err });
+    res.json({
+      responseCode: "01",
+      responseMessage: "Unable to fetch data at the moment",
+      data: { error },
+    });
   }
 };
 
@@ -44,8 +48,8 @@ const getProductById = async (req, res) => {
   try {
     const product = await Products.findById(req.params.productId);
 
-    if (product == null) {
-      res.status(404).json({
+    if (!product) {
+      res.status(200).json({
         responseCode: "01",
         responseMessage: "No record found",
       });

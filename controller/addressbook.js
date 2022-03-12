@@ -1,12 +1,14 @@
+const AddressBook = require("../models/AddressBook");
+const { createAuth } = require("./auth");
 const Users = require("../models/Users");
-const { createAuth } = require("../controller/auth");
-const Auth = require("../models/Auth");
 const Role = require("../uitls/constants");
+const mongoose = require("mongoose");
+const { AddressType } = require("../uitls/constants");
 
-const getUsers = async (req, res) => {
+const getAllAddress = async (req, res) => {
   console.log(req.user);
   try {
-    let users = await Users.find().lean().populate(["auth", "address"]);
+    let users = await AddressBook.find().lean();
 
     for (i = 0; i < users.length; i++) {
       const user = users[i];
@@ -23,7 +25,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getAddressById = async (req, res) => {
   const userId = req.params.userId;
   const user = req.user;
 
@@ -55,51 +57,46 @@ const getUserById = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
-  const { firstName, lastName, phoneNumber, email, role } = req.body;
+const addAdress = async (req, res) => {
+  const { street, city, state, type } = req.body;
+  const userId = req.user.userId;
 
-  let auth = new Auth();
-  auth.username = email;
-  auth.password = req.body.password;
-  auth.setPassword(req.body.password);
-  auth.role = role;
+  // if (userId !== user.userId && user.role !== Role.Admin) {
+
+  // }
+
+  const address = new AddressBook({
+    street,
+    city,
+    state,
+    type: type || AddressType.Secondary,
+    _id: new mongoose.Types.ObjectId(),
+  });
+  address.user_id = userId;
+
+  console.log(userId);
 
   try {
-    const authCall = await createAuth(auth, res);
+    const addressSave = await address.save();
 
-    if (authCall.responseCode != "00") {
-      return res.status(400).json({
-        responseCode: "01",
-        responseMessage: "User Profile creation failed",
-        error: authCall.err,
-      });
-    }
-
-    const user = new Users({
-      firstName,
-      lastName,
-      phoneNumber,
-      email,
-      auth: authCall.id,
-    });
-
-    const userSave = await user.save();
-
+    await Users.updateOne(
+      { _id: userId },
+      { $addToSet: { address: addressSave._id } }
+    );
     res.json({
       responseCode: "00",
-      responseMessage: "User created successfully",
-      role: authCall.role,
-      data: userSave,
+      responseMessage: "Address book updated successfully",
+      data: addressSave ,
     });
   } catch (err) {
     return res.json({
       responseCode: "01",
-      responseMessage: `User creation failed ${err}`,
+      responseMessage: `Unable to add address ${err}`,
     });
   }
 };
 
-const updateUser = async (req, res) => {
+const updateAddress = async (req, res) => {
   const userId = req.params.userId;
   const user = req.user;
 
@@ -123,7 +120,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-const deleteUser = async (req, res) => {
+const deleteAddress = async (req, res) => {
   try {
     const dogs = await Users.deleteOne({ _id: req.params.userId });
     res.json({
@@ -137,9 +134,9 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
+  getAllAddress,
+  getAddressById,
+  addAdress,
+  updateAddress,
+  deleteAddress,
 };

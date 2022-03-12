@@ -6,11 +6,17 @@ const ProductSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  imgUrl: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
   price: {
     type: Number,
     require: true,
   },
-  // dog_category_id, 
+  category: { type: mongoose.Schema.Types.ObjectId, ref: "ProductCategory" },
   colour: String,
   createdDate: {
     type: Date,
