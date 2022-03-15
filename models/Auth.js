@@ -1,40 +1,44 @@
 const mongoose = require("mongoose");
 var crypto = require("crypto");
-const {Role} = require("../uitls/constants");
+const { Role } = require("../uitls/constants");
 
-const AuthSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  username: {
-    type: String,
-    required: true,
-    unique: true,
+const AuthSchema = mongoose.Schema(
+  {
+    _id: mongoose.Schema.Types.ObjectId,
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      require: true,
+    },
+    token: String,
+    role: {
+      type: String,
+      default: Role.Basic,
+      enum: [Role.Basic, Role.Seller, Role.Admin],
+    },
+    salt: {
+      type: String,
+      require: true,
+    },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
+
+    // createdDate: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
   },
-  password: {
-    type: String,
-    require: true,
-  },
-  token: String,
-  role: {
-    type: String,
-    default: Role.Basic,
-    enum: [Role.Basic, Role.Seller, Role.Admin]
-   },
-  salt: {
-    type: String,
-    require: true,
-  },
-  lastLogin: {
-    type: Date,
-    default: Date.now,
-  },
-  
-  // createdDate: {
-  //   type: Date,
-  //   default: Date.now,
-  // },
-}, {timestamps: true});
+  { timestamps: true }
+);
 
 AuthSchema.methods.setPassword = function (password) {
+  console.log(password);
   // Creating a unique salt for a particular user
   this.salt = crypto.randomBytes(16).toString("hex");
 

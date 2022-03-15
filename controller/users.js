@@ -4,9 +4,11 @@ const Auth = require("../models/Auth");
 const Role = require("../uitls/constants");
 
 const getUsers = async (req, res) => {
-  console.log(req.user);
   try {
-    let users = await Users.find().lean().populate(["auth", "address"]);
+    let users = await Users.find()
+      .lean()
+      .populate("auth")
+      .populate({ path: "address", select: "street -_id" });
 
     for (i = 0; i < users.length; i++) {
       const user = users[i];

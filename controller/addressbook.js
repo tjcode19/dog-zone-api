@@ -74,14 +74,13 @@ const addAdress = async (req, res) => {
   });
   address.user_id = userId;
 
-  console.log(userId);
 
   try {
     const addressSave = await address.save();
 
     await Users.updateOne(
       { _id: userId },
-      { $addToSet: { address: addressSave._id } }
+      { $addToSet: { address: "622cd6cc0b9dbb161cad4e7a" } }
     );
     res.json({
       responseCode: "00",

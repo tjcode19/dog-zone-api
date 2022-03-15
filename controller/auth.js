@@ -25,7 +25,7 @@ const login = async (req, res) => {
       role: user.auth.role,
     });
 
-    const { firstName, lastName, email } = user;
+    const { firstName, lastName} = user;
 
     if (!user) {
       return res.status(404).json({
@@ -58,24 +58,88 @@ const login = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const userId = req.user.userId;
+  const { password } = req.body;
 
-  console.log("user id", userId);
+  if (!password) {
+    return res.status(400).json({
+      responseCode: "01",
+      responseMessage: "Password field can not be empty",
+    });
+  }
 
   try {
-    const auth = await User.findOne({ _id: userId });
+    const user = await User.findOne({ _id: userId }).populate("auth");
 
-    if (!auth) {
+    if (!user) {
       return res.status(404).json({
         responseCode: "01",
         responseMessage: "No Record Found",
       });
     }
 
+    //Set new password
+    user.auth.setPassword(password);
+    //Save the change.
+    await user.auth.save();
+
     res.status(200).json({
       responseCode: "00",
       responseMessage: "Password was reset successful",
     });
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    res.json({
+      responseCode: "01",
+      responseMessage: "Password reset failed",
+    });
+  }
+};
+
+const changePassword = async (req, res) => {
+  const userId = req.user.userId;
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(404).json({
+      responseCode: "01",
+      responseMessage: "Please set old and new password",
+    });
+  }
+
+  try {
+    //Find user by id extracetd from the token
+    const user = await User.findOne({ _id: userId }).populate("auth");
+    //check if any record was returned
+    if (!user) {
+      return res.status(404).json({
+        responseCode: "01",
+        responseMessage: "No Record Found",
+      });
+    }
+    //Check if the current password if valid
+    if (!user.auth.validPassword(oldPassword)) {
+      return res.status(400).json({
+        responseCode: "01",
+        responseMessage: "Wrong Current Password",
+      });
+    }
+
+    //Set new password
+    user.auth.setPassword(newPassword);
+    //Save the change.
+    await user.auth.save();
+
+    res.status(200).json({
+      responseCode: "00",
+      responseMessage: "Password changed successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      responseCode: "01",
+      responseMessage: "Password change failed",
+    });
+  }
 };
 
 const createAuth = async (req, res) => {
@@ -114,4 +178,4 @@ const createAuth = async (req, res) => {
   }
 };
 
-module.exports = { login, createAuth, resetPassword };
+module.exports = { login, createAuth, resetPassword, changePassword };
