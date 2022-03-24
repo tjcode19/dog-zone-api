@@ -4,6 +4,18 @@ Role = {
   Admin: "Admin",
 };
 
+//Order Status Enum
+
+OrderStatus = {
+  newOrder: "Order Placed",
+  confirmed: "Order Confirmed",
+  fulfilled: "Order Fulfilled",
+  shipped: "Order Shipped",
+  outForDelivery: "Out For Delivery",
+  delivered: "Order Delivered",
+};
+
+//Address Enum
 AddressType = {
   Primary: "Primary",
   Secondary: "Secondary",

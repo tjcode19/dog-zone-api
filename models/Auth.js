@@ -24,15 +24,11 @@ const AuthSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    emailVerified: { type: Boolean, default: false },
     lastLogin: {
       type: Date,
       default: Date.now,
     },
-
-    // createdDate: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
   },
   { timestamps: true }
 );

@@ -30,6 +30,6 @@ const UserSchema = mongoose.Schema({
       "Please fill a valid email address",
     ],
   },
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema);

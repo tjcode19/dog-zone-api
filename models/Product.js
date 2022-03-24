@@ -13,15 +13,30 @@ const ProductSchema = mongoose.Schema({
     type: String,
   },
   price: {
-    type: Number,
-    require: true,
+    type:Object,
+    base: {
+      type: mongoose.Schema.Types.Decimal128,
+      default: 0.0,
+    },
+    discount: mongoose.Schema.Types.Decimal128,
+    currency: {
+      type: String,
+      default: "NGN",
+      enum: ["USD", "NGN"],
+    },
+    required: true,
   },
   category: { type: mongoose.Schema.Types.ObjectId, ref: "ProductCategory" },
-  colour: String,
+  options: {
+    age: Number,
+    features: [{type:String}],
+    colour: [{tye:String}],
+  },
+  quantity: Number,
   createdDate: {
     type: Date,
     default: Date.now,
   },
-});
+},  { timestamps: true });
 
 module.exports = mongoose.model("Product", ProductSchema);

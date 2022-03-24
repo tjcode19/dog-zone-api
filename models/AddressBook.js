@@ -25,6 +25,7 @@ const AddressBookSchema = mongoose.Schema({
     default: Role.Secondary,
     enum: [AddressType.Primary, AddressType.Secondary, AddressType.Office],
   },
-});
+  business_name:{type: String}
+},  { timestamps: true });
 
 module.exports = mongoose.model("AddressBook", AddressBookSchema);
