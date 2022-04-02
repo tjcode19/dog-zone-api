@@ -34,7 +34,6 @@ const AuthSchema = mongoose.Schema(
 );
 
 AuthSchema.methods.setPassword = function (password) {
-  console.log(password);
   // Creating a unique salt for a particular user
   this.salt = crypto.randomBytes(16).toString("hex");
 

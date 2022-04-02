@@ -1,9 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-
-const ProductCateSchema = mongoose.Schema({
+const ProductCateSchema = mongoose.Schema(
+  {
     _id: mongoose.Schema.Types.ObjectId,
-    name:String
-},  { timestamps: true });
+    name: String,
+    show: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('ProductCategory', ProductCateSchema);
+module.exports = mongoose.model("ProductCategory", ProductCateSchema);
