@@ -1,5 +1,4 @@
 const Auth = require("../models/Auth");
-const Users = require("../models/Users");
 const User = require("../models/Users");
 const mongoose = require("mongoose");
 
@@ -16,16 +15,9 @@ const login = async (req, res) => {
   }
 
   try {
-    const user = await Users.findOne({
+    const user = await User.findOne({
       email: username,
     }).populate("auth");
-
-    const token = generateAccessToken({
-      userId: user._id,
-      role: user.auth.role,
-    });
-
-    const { firstName, lastName} = user;
 
     if (!user) {
       return res.status(404).json({
@@ -33,12 +25,20 @@ const login = async (req, res) => {
         responseMessage: "User does not exist",
       });
     }
+
     if (!user.auth.validPassword(password)) {
       return res.status(400).json({
         responseCode: "01",
         responseMessage: "Wrong Password",
       });
     }
+
+    const token = generateAccessToken({
+      userId: user._id,
+      role: user.auth.role,
+    });
+
+    const { firstName, lastName } = user;
 
     res.status(200).json({
       responseCode: "00",
@@ -52,7 +52,10 @@ const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res.json({ message: err });
+    res.json({
+      responseCode: "01",
+      responseMessage: "Login failed",
+    });
   }
 };
 
@@ -87,7 +90,6 @@ const resetPassword = async (req, res) => {
       responseMessage: "Password was reset successful",
     });
   } catch (err) {
-    console.log(err);
     res.json({
       responseCode: "01",
       responseMessage: "Password reset failed",

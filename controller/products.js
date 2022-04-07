@@ -1,4 +1,5 @@
 const Products = require("../models/Product");
+const dogBreeds = require("dog-breeds");
 
 const getProducts = async (req, res) => {
   const { search, limit } = req.query;
@@ -66,6 +67,28 @@ const getProductById = async (req, res) => {
   }
 };
 
+const getDogBreed = async (req, res) => {
+  try {
+    const breed = dogBreeds.all;
+
+    if (!breed) {
+      res.status(404).json({
+        responseCode: "01",
+        responseMessage: "No record found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      responseCode: "00",
+      responseMessage: "Data retrieved successfully",
+      data: breed,
+    });
+  } catch (err) {
+    res.json({ message: err });
+  }
+};
+
 const createProduct = async (req, res) => {
   const { name, price } = req.body;
   const product = new Products({ name, price });
@@ -125,4 +148,5 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  getDogBreed,
 };

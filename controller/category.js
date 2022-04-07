@@ -81,13 +81,16 @@ const addCategory = async (req, res) => {
 
 const updateCate = async (req, res) => {
   const user = req.user;
+  const cateId = req.params.cateId;
 
-  const { bodyData } = req.body;
+  const  bodyData  = req.body;
+
+  console.log(bodyData);
 
   //Check if this user has the right to access this resource.
   if (user.role !== Role.Basic) {
     try {
-      await ProductCate.updateOne({ _id: catId }, { $set: { bodyData } });
+      await ProductCate.updateOne({ _id: cateId }, { $set:  bodyData });
       res.json({
         responseCode: "00",
         responseMessage: "Data updated successfully",

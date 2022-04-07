@@ -22,6 +22,13 @@ AddressType = {
   Office: "Office",
 };
 
+//ProductCategory
+ProductCategory = {
+  Primary: "Primary",
+  Secondary: "Secondary",
+  Office: "Office",
+};
+
 //Response code and messages enum
 ResponseDetails = {
   TokenNotProvided: {
